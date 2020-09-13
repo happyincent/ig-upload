@@ -76,7 +76,7 @@ interface fileInfo {
           lat: info.latitude,
           lon: info.longitude,
         });
-        if (res[0]) caption += ` #${res[0].city}`;
+        if (res[0]) caption += ` #${res[0].city ?? res[0].country}`;
       }
       if (info.Model) caption += ` (${info.Model})`;
 
