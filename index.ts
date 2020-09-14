@@ -1,5 +1,3 @@
-#! /usr/bin/env node
-
 import fs from "fs";
 import path from "path";
 import moment from "moment";
@@ -31,7 +29,7 @@ async function login() {
   process.nextTick(async () => await ig.simulate.postLoginFlow());
 }
 
-interface fileInfo {
+interface FileInfo {
   file: string;
   DateTimeOriginal?: Date;
   Model?: string;
@@ -46,7 +44,7 @@ interface fileInfo {
       .filter((file) => path.extname(file).toLowerCase() === EXTENSION)
       .map((file) => path.join(FOLDER, file));
 
-    let filesInfo: fileInfo[] = await Promise.all(
+    let filesInfo: FileInfo[] = await Promise.all(
       files.map(async (file) => {
         const res = await exifr.parse(file, [
           "DateTimeOriginal",
