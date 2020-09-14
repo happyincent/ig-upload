@@ -8,6 +8,10 @@ Upload photos with caption e.g., `#20200913 #Taipei (Pixel 3a XL)` to Instagram 
 * Crop image if `width < height` in a [4:5](https://help.instagram.com/1631821640426723) aspect ratio ([aspectratio](https://github.com/Turistforeningen/node-aspectratio), [sharp](https://github.com/lovell/sharp))
 * Login and upload photos to Instagram Feed ([instagram-private-api](https://github.com/dilame/instagram-private-api), [fakeig.ts](./fakeig.ts))
 
+## Prerequisite
+* [Node.js](https://nodejs.org/en/)
+* [TypeScript](https://www.typescriptlang.org/#installation)
+
 ## Usage
 #### 0. Installation
 ```
