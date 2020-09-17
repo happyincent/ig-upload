@@ -1,5 +1,5 @@
 {
-  "name": "ig-upload",
+  "name": "@happyincent/ig-upload",
   "version": "1.0.0",
   "description": "Upload photos to Instagram in one click.",
   "main": "index.js",
