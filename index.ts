@@ -46,20 +46,13 @@ interface FileInfo {
 
     let filesInfo: FileInfo[] = await Promise.all(
       files.map(async (file) => {
-        const res = await exifr.parse(file, [
-          "DateTimeOriginal",
-          "Model",
-          "GPSLatitude",
-          "GPSLongitude",
-        ]);
+        const res = await exifr.parse(file, ["DateTimeOriginal", "Model", "GPSLatitude", "GPSLongitude"]);
         return { ...res, file: file };
       })
     );
 
     filesInfo.sort(
-      (prev, next) =>
-        new Date(prev.DateTimeOriginal ?? 0).getTime() -
-        new Date(next.DateTimeOriginal ?? 1).getTime()
+      (prev, next) => new Date(prev.DateTimeOriginal ?? 0).getTime() - new Date(next.DateTimeOriginal ?? 1).getTime()
     );
 
     if (!DEBUG) await login();
@@ -91,7 +84,7 @@ interface FileInfo {
             width: crop[2] as number,
             height: crop[3] as number,
           })
-          .jpeg({ quality: 90 })
+          .jpeg({ quality: 95 })
           .toBuffer();
       } else {
         photo = await img.jpeg({ quality: 95 }).toBuffer();
