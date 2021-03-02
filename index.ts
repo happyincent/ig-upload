@@ -29,14 +29,6 @@ async function login() {
   process.nextTick(async () => await ig.simulate.postLoginFlow());
 }
 
-interface FileInfo {
-  file: string;
-  DateTimeOriginal?: Date;
-  Model?: string;
-  latitude?: number;
-  longitude?: number;
-}
-
 (async () => {
   try {
     const files = fs
@@ -44,10 +36,16 @@ interface FileInfo {
       .filter((file) => path.extname(file).toLowerCase() === EXTENSION)
       .map((file) => path.join(FOLDER, file));
 
-    let filesInfo: FileInfo[] = await Promise.all(
+    let filesInfo = await Promise.all(
       files.map(async (file) => {
         const res = await exifr.parse(file, ["DateTimeOriginal", "Model", "GPSLatitude", "GPSLongitude"]);
-        return { ...res, file: file };
+        return { ...res, file: file } as {
+          file: string;
+          DateTimeOriginal?: Date;
+          Model?: string;
+          latitude?: number;
+          longitude?: number;
+        };
       })
     );
 
