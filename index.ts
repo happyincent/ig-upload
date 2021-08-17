@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import moment from "moment";
+import dayjs from "dayjs";
 import exifr from "exifr";
 import sharp from "sharp";
 import dotenv from "dotenv";
@@ -59,17 +59,17 @@ async function login() {
       let photo: Buffer = Buffer.alloc(0);
       let caption: string = "";
 
-      if (info.DateTimeOriginal) caption += `#${moment(info.DateTimeOriginal).format("YYYYMMDD")}`;
+      if (info.DateTimeOriginal) caption += `#${dayjs(info.DateTimeOriginal).format("YYYYMMDD")}`;
       if (info.latitude && info.longitude) {
         const res = await geocoder.reverse({
           lat: info.latitude,
           lon: info.longitude,
         });
-        if (res[0]) caption += ` #${res[0].city ?? res[0].country}`;
+        if (res[0]) caption += ` #${(res[0].city ?? res[0].country)?.replace("New Taipei", "NewTaipei")}`;
       }
       if (info.Model) caption += ` (${info.Model})`;
 
-      console.log(`${path.basename(info.file)} (${parseInt(key) + 1}/${filesInfo.length})`);
+      console.log(`${path.basename(info.file)} "${caption}" (${parseInt(key) + 1}/${filesInfo.length})`);
 
       const img = sharp(await sharp(info.file).rotate().toBuffer());
       const { width, height } = await img.metadata();
