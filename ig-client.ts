@@ -1,4 +1,43 @@
+import { IgApiClient, PostingPhotoOptions } from "instagram-private-api";
 import fetch from "node-fetch";
+import sharp from "sharp";
+
+const IG_Portrait_Aspect_Ratio = 5 / 4; // 4:5
+
+async function createIgPhoto(filename: string) {
+  const img = sharp(await sharp(filename).rotate().toBuffer());
+  const { width, height } = await img.metadata();
+  if (width && height && width < height) {
+    return await img
+      .resize(width, Math.floor(width * IG_Portrait_Aspect_Ratio))
+      .jpeg({ quality: 95, chromaSubsampling: "4:4:4" })
+      .toBuffer();
+  } else {
+    return await img.jpeg({ quality: 95, chromaSubsampling: "4:4:4" }).toBuffer();
+  }
+}
+
+async function createIgClient(debug: boolean) {
+  const ig = new IgApiClient();
+  ig.state.generateDevice(process.env.IG_USERNAME ?? "");
+
+  if (!debug) {
+    await ig.simulate.preLoginFlow();
+    await ig.account.login(process.env.IG_USERNAME ?? "", process.env.IG_PASSWORD ?? "");
+    process.nextTick(async () => await ig.simulate.postLoginFlow());
+  }
+
+  return {
+    publishPhoto: (options: PostingPhotoOptions) =>
+      !debug
+        ? ig.publish.photo(options)
+        : publishWithFetch(options.file, options.caption ?? "", {
+            cookie: process.env.cookie ?? "",
+            csrftoken: process.env.csrftoken ?? "",
+            claim: process.env.claim ?? "",
+          }),
+  };
+}
 
 async function publishWithFetch(
   photo: Buffer,
@@ -35,11 +74,11 @@ async function publishWithFetch(
     body: photo,
   });
 
-  const res = await upload.json();
+  const res = await (upload.json() as Promise<any>);
   console.log(res);
 
   if ("upload_id" in res) {
-    fetch("https://www.instagram.com/create/configure/", {
+    await fetch("https://www.instagram.com/create/configure/", {
       headers: {
         accept: "*/*",
         "accept-language": "zh-TW,zh;q=0.9,en;q=0.8",
@@ -63,4 +102,4 @@ async function publishWithFetch(
   }
 }
 
-export { publishWithFetch };
+export { createIgPhoto, createIgClient };
