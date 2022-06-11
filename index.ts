@@ -5,13 +5,13 @@ import fs from "fs";
 import path from "path";
 import { createIgClient, createIgPhoto } from "./ig-client";
 import { reverse } from "./nominatim";
-dotenv.config();
 
 const DEBUG = false;
 const DELAY = 1000 * 1;
 const FOLDER = path.resolve("./img/");
 const FOLDER_ED = path.join(FOLDER, "ed");
 fs.existsSync(FOLDER_ED) || fs.mkdirSync(FOLDER_ED, { recursive: true });
+dotenv.config();
 
 (async () => {
   try {
@@ -44,8 +44,8 @@ fs.existsSync(FOLDER_ED) || fs.mkdirSync(FOLDER_ED, { recursive: true });
       if (info.DateTimeOriginal) caption += `#${dayjs(info.DateTimeOriginal).format("YYYYMMDD")}`;
       if (info.latitude && info.longitude) {
         const res = await reverse({ lat: info.latitude, lon: info.longitude, language: "en" });
-        const { town, suburb, city, county, country } = res.address;
-        const place = [town, suburb, city, county, country]
+        const { town, suburb, city, state_district, county, state, country } = res.address;
+        const place = [town, suburb, city, state_district, county, state, country]
           .find((val) => Boolean(val))
           ?.replace("New Taipei", "NewTaipei")
           ?.replace("'", "")

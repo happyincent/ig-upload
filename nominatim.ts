@@ -21,16 +21,20 @@ interface NominatimResult {
 interface NominatimAddress {
   amenity?: string;
   building?: string;
+  city_district?: string;
   city?: string;
+  country_code?: string;
   country?: string;
   county?: string;
   hamlet?: string;
   highway?: string;
+  house_number?: string;
   leisure?: string;
   neighbourhood?: string;
   postcode?: string;
   road?: string;
   shop?: string;
+  state_district?: string;
   state?: string;
   suburb?: string;
   tourism?: string;
