@@ -18,9 +18,9 @@ dotenv.config();
     const igClient = await createIgClient(DEBUG);
 
     const files = fs
-      .readdirSync(FOLDER)
-      .filter((file) => path.extname(file).toLowerCase() === ".jpg")
-      .map((file) => path.join(FOLDER, file));
+      .readdirSync(FOLDER, { withFileTypes: true })
+      .filter((file) => file.isFile())
+      .map((file) => path.join(file.parentPath, file.name));
 
     let filesInfo = (
       await Promise.all(
