@@ -20,6 +20,7 @@ async function createIgPhoto(filename: string) {
 async function createIgClient(debug: boolean) {
   const ig = new IgApiClient();
   ig.state.generateDevice(process.env.IG_USERNAME ?? "");
+  ig.state.deviceString = "32/12; 540dpi; 1080x2106; Google/google; Pixel 3a XL; bonito; bonito; en_US;"
 
   if (!debug) {
     await ig.simulate.preLoginFlow();
