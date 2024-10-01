@@ -1,5 +1,5 @@
 node_modules/
+img/
 .env
 *.log
-*.jpg
 *.js
