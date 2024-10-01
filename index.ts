@@ -59,7 +59,7 @@ dayjs.extend(customParseFormat);
       }
       if (info.Model) caption += ` #${info.Model}`;
 
-      await igClient.publishPhoto({ file: await createIgPhoto(info.file), caption: caption });
+      await igClient.publishPhoto(await createIgPhoto(info.file), { caption });
       fs.renameSync(info.file, path.join(FOLDER_ED, path.basename(info.file)));
       console.log(`${path.basename(info.file)} "${caption}" (${parseInt(index) + 1}/${filesInfo.length})`);
     }

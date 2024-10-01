@@ -1,4 +1,5 @@
-import { IgApiClient, PostingPhotoOptions } from "instagram-private-api";
+import { igApi } from "insta-fetcher";
+import { MediaConfigureOptions } from "insta-fetcher/dist/types";
 import fetch from "node-fetch";
 import sharp from "sharp";
 
@@ -18,21 +19,13 @@ async function createIgPhoto(filename: string) {
 }
 
 async function createIgClient(debug: boolean) {
-  const ig = new IgApiClient();
-  ig.state.generateDevice(process.env.IG_USERNAME ?? "");
-  ig.state.deviceString = "32/12; 540dpi; 1080x2106; Google/google; Pixel 3a XL; bonito; bonito; en_US;"
-
-  if (!debug) {
-    await ig.simulate.preLoginFlow();
-    await ig.account.login(process.env.IG_USERNAME ?? "", process.env.IG_PASSWORD ?? "");
-    process.nextTick(async () => await ig.simulate.postLoginFlow());
-  }
+  const ig = new igApi(process.env.cookie);
 
   return {
-    publishPhoto: (options: PostingPhotoOptions) =>
+    publishPhoto: (photo: Buffer, options: MediaConfigureOptions, type: "feed" | "story" = "feed") =>
       !debug
-        ? ig.publish.photo(options)
-        : publishWithFetch(options.file, options.caption ?? "", {
+        ? ig.addPost(photo, type, options)
+        : publishWithFetch(photo, options.caption ?? "", {
             cookie: process.env.cookie ?? "",
             csrftoken: process.env.csrftoken ?? "",
             claim: process.env.claim ?? "",
