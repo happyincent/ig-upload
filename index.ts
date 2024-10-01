@@ -54,7 +54,7 @@ dayjs.extend(customParseFormat);
           ?.replaceAll("'", "")
           ?.split(" ")[0];
         if (place)
-          if (["North", "South", "East", "West"].includes(place) && city) caption += ` #${place}${city}`;
+          if (["North", "South", "East", "West", "Zhongxi", "Central"].includes(place) && city) caption += ` #${place}${city}`;
           else caption += ` #${place}`;
       }
       if (info.Model) caption += ` #${info.Model}`;
