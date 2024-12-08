@@ -34,7 +34,7 @@ dayjs.extend(customParseFormat);
               : fs.statSync(file).mtime,
             Latitude: tags.gps?.Latitude,
             Longitude: tags.gps?.Longitude,
-            Model: tags.exif?.Model?.description.replaceAll(" ", "").replaceAll("-", ""),
+            Model: tags.exif?.Model?.description,
           }))
         )
       )
@@ -57,7 +57,7 @@ dayjs.extend(customParseFormat);
           if (["North", "South", "East", "West", "Zhongxi", "Central"].includes(place) && city) caption += ` #${place}${city}`;
           else caption += ` #${place}`;
       }
-      if (info.Model) caption += ` #${info.Model}`;
+      if (info.Model) caption += ` #${info.Model.replace(/[^a-zA-Z0-9_]/g, '')}`;
 
       await igClient.publishPhoto(await createIgPhoto(info.file), { caption });
       fs.renameSync(info.file, path.join(FOLDER_ED, path.basename(info.file)));
