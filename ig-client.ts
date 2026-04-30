@@ -2,19 +2,19 @@ import { igApi } from "insta-fetcher";
 import { MediaConfigureOptions } from "insta-fetcher/dist/types";
 import sharp from "sharp";
 
-const IG_Portrait_Aspect_Ratio = 5 / 4; // 4:5
-
 async function createIgPhoto(filename: string) {
-  const img = sharp(await sharp(filename).rotate().toBuffer());
+  const buffer = await sharp(filename).rotate().toBuffer();
+  /*
+  const IG_Portrait_Aspect_Ratio = 5 / 4; // 4:5
+  const img = sharp(buffer);
   const { width, height } = await img.metadata();
   if (width && height && width < height) {
     return await img
       .resize(width, Math.floor(width * IG_Portrait_Aspect_Ratio))
-      .jpeg({ quality: 95, chromaSubsampling: "4:4:4" })
       .toBuffer();
-  } else {
-    return await img.jpeg({ quality: 95, chromaSubsampling: "4:4:4" }).toBuffer();
   }
+  */
+  return buffer;
 }
 
 async function createIgClient(debug: boolean) {
@@ -38,6 +38,7 @@ async function publishWithFetch(
   header: { cookie: string; csrftoken: string; claim: string }
 ) {
   const upload_id = Date.now();
+  const { width: upload_media_width = 1080, height: upload_media_height = 1080 } = await sharp(photo).metadata();
 
   const upload = await fetch(`https://www.instagram.com/rupload_igphoto/fb_uploader_${upload_id}`, {
     headers: {
@@ -47,7 +48,7 @@ async function publishWithFetch(
       "content-length": `${photo.byteLength}`,
       origin: "https://www.instagram.com",
       "user-agent":
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
       offset: "0",
       "sec-fetch-dest": "empty",
       "sec-fetch-mode": "cors",
@@ -59,12 +60,13 @@ async function publishWithFetch(
       "x-ig-app-id": "1217981644879628",
       "x-ig-www-claim": `${header.claim}`,
       "x-instagram-ajax": "a1de4804d095",
-      "x-instagram-rupload-params": `{"media_type":1,"upload_id":"${upload_id}","upload_media_height":1080,"upload_media_width":1080}`,
+      "x-instagram-rupload-params":
+        `{"media_type":1,"upload_id":"${upload_id}","upload_media_height":${upload_media_height},"upload_media_width":${upload_media_width}}`,
       "x-requested-with": "XMLHttpRequest",
       cookie: header.cookie,
     },
     method: "POST",
-    body: photo,
+    body: new Uint8Array(photo),
   });
 
   const res = await (upload.json() as Promise<any>);
