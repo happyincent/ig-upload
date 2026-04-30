@@ -1,6 +1,5 @@
 import { igApi } from "insta-fetcher";
 import { MediaConfigureOptions } from "insta-fetcher/dist/types";
-import fetch from "node-fetch";
 import sharp from "sharp";
 
 const IG_Portrait_Aspect_Ratio = 5 / 4; // 4:5

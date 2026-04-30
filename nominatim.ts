@@ -1,7 +1,5 @@
 // Reverse API: http://nominatim.org/release-docs/latest/api/Reverse/
 
-import fetch from "node-fetch";
-
 interface NominatimResult {
   place_id: number;
   licence: string;
